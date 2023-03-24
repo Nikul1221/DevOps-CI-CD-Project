@@ -3,8 +3,8 @@ pipeline {
 	
   environment {
     DOCKERHUB_CREDENTIALS = credentials('docker-hub-cred')
-    REMOTE_SERVER = 'your-remote-server-ip'
-    REMOTE_USER = 'your-remote-server-user' 	  	  
+    REMOTE_SERVER = '52.34.199.130'
+    REMOTE_USER = 'ec2-user' 	  	  
   }
 	
   // Fetch code from GitHub
@@ -12,7 +12,7 @@ pipeline {
   stages {
     stage('checkout') {
       steps {
-        git branch: 'main', url: 'https://github.com/palakbhawsar98/JavaWebApp'
+        git branch: 'main', url: 'https://github.com/Nikul1221/DevOps-CI-CD-Project'
 
       }
     }
@@ -46,8 +46,8 @@ pipeline {
     stage('Build Docker Image') {
 
       steps {
-        sh 'docker build -t javawebapp:latest .'
-        sh 'docker tag javawebapp palakbhawsar/javawebapp:latest'
+        sh 'docker build -t DevOps-CI-CD-Project:latest .'
+        sh 'docker tag DevOps-CI-CD-Project Nikul1221/DevOps-CI-CD-Project:latest'
       }
     }
 	  
@@ -63,7 +63,7 @@ pipeline {
 	  
     stage('Push Image to dockerHUb') {
       steps {
-        sh 'docker push palakbhawsar/javawebapp:latest'
+        sh 'docker push Nikul1221/DevOps-CI-CD-Project:latest'
       }
       post {
         always {
@@ -79,9 +79,9 @@ pipeline {
       steps {
         script {
           sshagent(credentials: ['awscred']) {
-          sh "ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker stop javaApp || true && docker rm javaApp || true'"
-	  sh "ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker pull palakbhawsar/javawebapp'"
-          sh "ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker run --name javaApp -d -p 8081:8081 palakbhawsar/javawebapp'"
+          sh "ssh -o StrictHostKeyChecking=no ${ec2-user}@${52.34.199.130} 'docker stop javaApp || true && docker rm javaApp || true'"
+	  sh "ssh -o StrictHostKeyChecking=no ${ec2-user}@${52.34.199.130} 'docker pull Nikul1221/DevOps-CI-CD-Project'"
+          sh "ssh -o StrictHostKeyChecking=no ${ec2-user}@${52.34.199.130} 'docker run --name javaApp -d -p 8081:8081 Nikul1221/DevOps-CI-CD-Project'"
           }
         }
       }
